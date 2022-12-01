@@ -1,0 +1,79 @@
+[package]
+name = "league"
+version = "0.1.0"
+authors = ["dshaw <deke@mytechies.com>"]
+edition = "2018"
+
+exclude = [
+  # Those files are rust-optimizer artifacts. You might want to commit them for convenience but they should not be part of the source code publication.
+  "contract.wasm",
+  "hash.txt",
+]
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[lib]
+crate-type = ["cdylib", "rlib"]
+
+[profile.release]
+opt-level = 3
+debug = false
+rpath = false
+lto = true
+debug-assertions = false
+codegen-units = 1
+panic = 'abort'
+incremental = false
+overflow-checks = true
+
+[features]
+# for more explicit tests, cargo test --features=backtraces
+backtraces = ["cosmwasm-std/backtraces"]
+# use library feature to disable all instantiate/execute/query exports
+library = []
+
+[package.metadata.scripts]
+optimize = """docker run --rm -v "$(pwd)":/code \
+  --mount type=volume,source="$(basename "$(pwd)")_cache",target=/code/target \
+  --mount type=volume,source=registry_cache,target=/usr/local/cargo/registry \
+  cosmwasm/rust-optimizer:0.12.8
+"""
+
+[dependencies]
+cw0 = { version = "0.10.3" }
+cw1 = { version = "0.16.0" }
+cw2 = { version = "0.16.0" }
+cw4 = { version = "0.16.0" }
+cw-controllers =  { version = "0.16.0" }
+cw-storage-plus = {  version = "0.16.0" }
+
+
+cosmwasm-std = { version = "1.1.4" }
+schemars = "0.8.1"
+serde = { version = "1.0.103", default-features = false, features = ["derive"] }
+thiserror = { version = "1.0.23" }
+saleable = { path = "../saleable" }
+managed = { path = "../managed" }
+
+cw4-group = { path = "../cw4-group" }
+group-admin = { path = "../group-admin" }
+goi-manager = { path = "../goi-manager" }
+manager = { path = "../manager" }
+shared = { path = "../shared" }
+
+
+
+anyhow = { version = "1.0", default-features = false }
+assert_matches = { version = "1.0"}
+derivative = { version = "2.0"}
+cosmwasm-schema = { version = "1.1.4" }
+
+
+[dev-dependencies]
+cw1 = { version = "0.16.0" }
+anyhow = { version = "1.0", default-features = false }
+assert_matches = { version = "1.0"}
+cw-multi-test = {  version = "0.16.0" }
+derivative = { version = "2.0"}
+cosmwasm-schema = { version = "1.1.4" }
+cw20 = "0.16.0"

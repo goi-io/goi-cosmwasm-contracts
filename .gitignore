@@ -1,0 +1,7 @@
+target/
+out/
+contracts/team/src/.idea/
+.idea/
+target_old/
+packages/
+contracts/tests/core
